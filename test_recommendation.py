@@ -1,44 +1,27 @@
 import unittest
-from restaurant_recommendation import recommend_restaurants
+from restaurant_recommendation import get_user_preferences
 
-class TestRestaurantRecommendation(unittest.TestCase):
-    # Sample restaurant data (name, cuisine, rating)
-    restaurants = [
-        {"name": "Restaurant A", "cuisine": "Italian", "rating": 4.5},
-        {"name": "Restaurant B", "cuisine": "Mexican", "rating": 4.0},
-        {"name": "Restaurant C", "cuisine": "Japanese", "rating": 4.2},
-        {"name": "Restaurant D", "cuisine": "Indian", "rating": 3.8},
-        # Add more restaurant data here
-    ]
+class TestUserPreferences(unittest.TestCase):
+    # Test case for valid user preferences and location
+    def test_valid_user_preferences_location(self):
+        available_cuisines = ["Italian", "Japanese", "Mexican", "Indian"]
+        user_input = (["Italian", "Japanese", "Done"], (40.7306, -73.9352))
+        expected_output = (["Italian", "Japanese"], (40.7306, -73.9352))
+        self.assertEqual(get_user_preferences(*user_input, available_cuisines), expected_output)
 
-    # Test case for valid user preferences
-    def test_valid_user_preferences(self):
-        user_input = ["Italian", "Japanese", "Done"]
-        expected_output = [
-            {"name": "Restaurant A", "cuisine": "Italian", "rating": 4.5},
-            {"name": "Restaurant C", "cuisine": "Japanese", "rating": 4.2}
-        ]
-        self.assertEqual(recommend_restaurants(user_input, self.restaurants), expected_output)
+    # Test case for invalid user input for cuisine preference
+    def test_invalid_user_input_cuisine(self):
+        available_cuisines = ["Italian", "Japanese", "Mexican", "Indian"]
+        user_input = (["Chinese", "Done"], ())
+        expected_output = ([], ())
+        self.assertEqual(get_user_preferences(*user_input, available_cuisines), expected_output)
 
-    # Test case for user preferences with no recommendations
-    def test_no_recommendations(self):
-        user_input = ["Mexican", "Indian", "Done"]
-        expected_output = []
-        self.assertEqual(recommend_restaurants(user_input, self.restaurants), expected_output)
-
-    # Test case for invalid user input
-    def test_invalid_user_input(self):
-        user_input = ["Chinese", "Italian", "Done"]
-        expected_output = [
-            {"name": "Restaurant A", "cuisine": "Italian", "rating": 4.5}
-        ]
-        self.assertEqual(recommend_restaurants(user_input, self.restaurants), expected_output)
-
-    # Test case for empty user input
-    def test_empty_user_input(self):
-        user_input = ["Done"]
-        expected_output = []
-        self.assertEqual(recommend_restaurants(user_input, self.restaurants), expected_output)
+    # Test case for empty user input for location
+    def test_empty_user_input_location(self):
+        available_cuisines = ["Italian", "Japanese", "Mexican", "Indian"]
+        user_input = (["Done"], ())
+        expected_output = ([], ())
+        self.assertEqual(get_user_preferences(*user_input, available_cuisines), expected_output)
 
 if __name__ == '__main__':
     unittest.main()
